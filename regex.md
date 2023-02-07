@@ -1,11 +1,9 @@
-# Regexp
-A `RegEx` vagy `RegExp` a `Regular Expression` rövid formája
+# Regex
+- [Regex gyorstalpaló](http://vbence.web.elte.hu/regex_leiras.html)
+- [Soczó Zsolt reguláris kifejezések](https://doksi.net/hu/get.php?lid=6139)
+- [Reguláris kifejezések avagy regexp](https://www.tutorial.hu/weboldal-keszites/regularis-kifejezesek-avagy-regexp-snippet/)
+- [regexlib.com](https://regexlib.com/?AspxAutoDetectCookieSupport=1)
+- [Regex eBook](https://riptutorial.com/ebook/regex)
+- [Regex oline](https://regex101.com)
 
-[Leírás](http://vbence.web.elte.hu/regex_leiras.html)
 
-### Regex operátorok
-- . Bármilyen karakter `b.ka` -> béka, bika
-- `[karaterek]` 
-```
-b[éa]ka -> béka, baka
-```
