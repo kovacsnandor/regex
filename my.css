@@ -1,0 +1,51 @@
+.higlight{
+    background-color: orange;
+}
+
+mark{
+    background-color: lightseagreen;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 3px;
+    padding: 0px 6px 1.5px 6px;
+}
+
+strong{
+    background-color: silver;
+    border-radius: 3px;
+    padding: 0px 6px 2px 6px;
+
+}
+
+li{
+    line-height: 1.6rem;
+}
+
+.my-border {
+    border: 1px dashed rgba(0,0,0,0.5);
+}
+
+.my-height{
+    height: 330px;
+}
+
+b {
+    color: maroon;
+}
+
+.my-content h2, .my-content h3  {
+    padding-top: 60px; 
+    margin-top: -60px;
+  }
+
+.my-tartalom{
+    height: 60px;
+}  
+
+.my-sticky{
+    top: 16px;
+}
+
+.my-bg-white {
+    background-color: white;
+}

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regex</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="my.css">
+</head>
+
+<body>
+    <div id="app" class="container-fluid">
+        <div class="row p-3">
+            <div class="col-6">
+                <div class="row sticky-top g-3">
+
+                    <!-- Kereső ablak -->
+                    <div class="col-9 my-border overflow-auto rounded p-3 bg-light my-height">
+                        <p>
+                            <label for="search" class="form-label">Kereső regex: {{getRegex}}</label>
+                            <input type="search" class="form-control" id="search" v-model="searchText">
+                        </p>
+                        <div v-html="textMarked()"></div>
+                    </div>
+
+                    <!-- Megtalált szavak listája -->
+                    <div class="col-3 my-border overflow-auto rounded bg-light my-height">
+                        <p class="m-0" v-for="(match, index) in getMatchList" :key="index" v-html="match"></p>
+                    </div>
+
+                    <div class="col-12 my-border rounded bg-light p-3">
+                        <label for="text" class="form-label">Szöveg:</label>
+                        <textarea class="form-control" id="text" rows="6" v-model="text"></textarea>
+                      </div>
+                </div>
+
+            </div>
+            <!-- Leírás, példák -->
+            <div class="col-6">
+                <div class="sticky-top pt-0 my-bg-white my-sticky">
+                    <div class="bg-light px-2 my-tartalom my-border rounded ">
+                        <a href="#karakter_megfeleltetes">Karakter megfeleltetés</a> |
+                        <a href="#karakterosztalyok">Karakterosztályok</a> |
+                        <a href="#tobbszorozes">Többszörözés</a> |
+                        <a href="#hatarok">Határok</a> |
+                        <a href="#elagazas">Elágazás</a> |
+                        <a href="#csoportositas">Csoportosítás</a> |
+                        <a href="#peldak">Példák</a>
+                    </div>
+                </div>
+                <div class="my-content">
+                    <h2>Linkek (források)</h2>
+                    <p>
+                        <a href="http://vbence.web.elte.hu/regex_leiras.html" target="_blank">Regex gyorstalpaló</a> |
+                        <a href="https://doksi.net/hu/get.php?lid=6139" target="_blank">Soczó Zsolt reguláris
+                            kifejezések</a> |
+                        <a href="https://www.tutorial.hu/weboldal-keszites/regularis-kifejezesek-avagy-regexp-snippet/"
+                            target="_blank">Reguláris kifejezések avagy regexp</a> |
+                        <a href="https://regexlib.com/?AspxAutoDetectCookieSupport=1" target="_blank">regexlib.com</a> |
+                        <a href="https://riptutorial.com/ebook/regex" target="_blank">Regex eBook</a> |
+                        <a href="https://regex101.com/" target="_blank">Regex oline</a> |
+                    </p>
+
+                    <h2>Mi a regex</h2>
+                    <p>A regex, regexp (regular expression) szó a reguláris kifejezés rövidítése, ami egy olyan leíró
+                        nyelv,
+                        amely segítségével szövegek különböző részeit kereshetjük, ragadhatjuk meg.</p>
+
+                    <h3 id="karakter_megfeleltetes">Karakter megfeleltetés</h3>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <strong>.</strong> (pont): Bármilyen karakter.<br>
+                            <mark @click="regexClick('b.ka')">b.ka</mark>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>[karakterek]</strong> A kapcsoszárójelek között felsorolt karakterek valamelyikével
+                            megegyező karakter.<br>
+                            <mark @click="regexClick('b[éa]ka')">b[éa]ka</mark> (é vagy a)<br>
+                            <mark @click="regexClick('b[a-u]ka')">b[a-u]ka</mark> (é-tól u-ig)<br>
+                            <mark @click="regexClick('b[0-9]')">b[0-9]</mark> (bármely számjegy)<br>
+                            <mark @click="regexClick('b[a-zA-Z]ka')">b[a-zA-Z]ka</mark> (bármely kis vagy nagybetű)
+                        </li>
+                        <li class="list-group-item">
+                            <strong>[^karakterek]</strong> A kapcsoszárójelek között felsorolt karakterek egyikével sem
+                            egyező karakter.<br>
+                            <mark @click="regexClick('b[^é]ka')">b[^é]ka</mark> (é vagy a)<br>
+                        </li>
+                    </ul>
+
+                    <h3 id="karakterosztalyok">Karakterosztályok</h3>
+                    <p>
+                        \d -> számjegy: [0-9]<br>
+                        \D -> nem számjegy: [^0-9]<br>
+                        \w -> bármilyen betű, szám vagy aláhúzásjel (_): [a-zA-Z0-9_]<br>
+                        \s -> szóköz, tabulátor, új sor<br>
+                        \S -> minden nem szóköz<br>
+                    </p>
+
+                    <p>
+                        Karakter ketegóriák: \p{Kategórianév}<br>
+                        \p{Ll} -> (lovercase) kisbetű<br>
+                        \p{Lu} -> (uppercase) nagybetű<br>
+                        \p{No} -> (Number other) egyéb szám (&frac14;, &frac12;, &frac34;)<br>
+                        \p{Ps} -> Punctuation, start, azaz nyitó írásjel: (, [, {<br>
+                        \p{Pe} -> Punctuation, end, azaz záró írásjel: ), ], }<br>
+                        \p{Punct} -> Írásjelek: , * = % stb. <br>
+                        \p{Po} -> Írásjelek: , * = % stb. <br>
+                        \p{Sc} -> Symbol currency, pénz szimbólumok : $, €, Ł stb. <br>
+                        \p{Z} -> Szeparátor karakterek : | ; stb. <br>
+                    </p>
+
+                    <h3 id="tobbszorozes">Többszörözés</h3>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <strong>?</strong> A megelőző minta 0 vagy 1 alkalommal fordul elő.<br>
+                            <mark @click="regexClick('borda.?')">borda.?</mark> borda, vagy borda után bármi<br>
+                            <mark @click="regexClick('borda[0-9]?')">borda[0-9]?</mark> borda, vagy borda után
+                            számjegy<br>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>+</strong> A megelőző minta 1 vagy több alkalommal (legalább egyszer) fordul elő.<br>
+                            <mark @click="regexClick('bo.+ka')">bo.+ka</mark> boróka, boka nem<br>
+                            <mark @click="regexClick('\\' + 'd+')">\d+</mark> egész számjegyek<br>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>*</strong> A megelőző minta 0 vagy akárhány alkalommal fordul elő.<br>
+                            <mark @click="regexClick('bo.*ka')">bo.*ka</mark> boróka és boka is<br>
+                            <mark @click="regexClick('.*')">.*</mark> bármi, az összes<br>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>{m,n}</strong> minimum és maximum vagy pontosan megadott számú előfordulás: {3}
+                            pontosan
+                            3 előfordulás; {3,} legalább 3 előfordulás; {2,5} legalább 2 legfeljebb 5 előfordulás;
+                            ({,10}
+                            legfeljebb 10 előfordulás: ez nem működik!!!.)<br>
+                            <mark @click="regexClick('d.{1,5}ány')">d.{1,5}ány</mark> dohány és dolmány.<br>
+                            <mark @click="regexClick('g{1,2}y')">g{1,2}y</mark> gy és ggy.
+                        </li>
+                    </ul>
+
+                    <h3 id="hatarok">Határok</h3>
+                    <p>A határokkal azt tudjuk meghatározni, hogy a regex minta a szöveg elején, végén, szóhatáron, nem szóhatáron található-e.
+                    </p>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <strong>^ vagy \A</strong> A szöveg elje felejen meg a mintának.<br>
+                            <mark @click="regexClick('^béka')">^béka</mark> a békanyál jó, a kecskebéka nem<br>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>$ vagy \z, \Z</strong> A szöveg vége feleljen meg a mintának. A \Z még megyenged
+                            utána
+                            egy soremelést.<br>
+                            <mark @click="regexClick('p.k$')">p.k$</mark> a pék, pók jó, a pókháló nem<br>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>^...$</strong> A szöveg elej és vége is feleljen meg a mintának.<br>
+                            <mark @click="regexClick('^p.k$')">^p.k$</mark> a pék, pók jó, a legpikánsabb, pikáns
+                            nem<br>
+                            <mark @click="regexClick('^$')">^$</mark> Üres sorok.<br>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>\b</strong> Szóhatár. Szavak elejének és végének keresése, vagy akár teljes szavak
+                            keresése<br>
+                            <mark @click="regexClick('\\' + 'bpó')">\bpó</mark> pók, pókháló<br>
+                            <mark @click="regexClick('\\' + 'bp.k' + '\\' + 'b')">\bp.k\b</mark> pók, pék. pókháló
+                            nem.<br>
+                            <mark @click="regexClick('\\' + 'b' + '\\' + 'w{3}' + '\\' + 'b')">'\b\w{3}\b'</mark> három
+                            betűs szavak. (szóhatárnak tekinti az ékezetes betűket, és az írásjeleket is)<br>
+                            <mark @click="regexClick('\\b[a-zA-z]{1,2}\\b')">\b[a-zA-z]{1,2}\b</mark> 
+                            egy vagy két kis- vagy nagybetűs angol ábécé betűi.
+
+                        </li>
+                        <li class="list-group-item">
+                            <strong>\B</strong> Nem szóhatáron egyezés.<br>
+                            <mark @click="regexClick('\\' + 'Bháló')">\Bháló</mark> pókháló, hálóing nem<br>
+                        </li>
+                    </ul>
+
+                    <h3 id="elagazas">Elágazás (vagy)</h3>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <strong>|</strong> Vagylagos egyezés: Két lehetőség közé téve bármelyikkel való egyezés
+                            találat.<br>
+                            <mark @click="regexClick('ka(lap|bát)')">ka(lap|bát)</mark> a kalap, kabát jó<br>
+                        </li>
+                    </ul>
+
+                    <h3 id="csoportositas">Csoportosítás</h3>
+                    A zárójelbe tett minta csoportot képez. Csoportot használunk:<br>
+                    - Összetett dolgokat akarunk ismételni<br>
+                    - A csoportok által megfogott tartalomra hivatkozhatunk a regex többi részében: visszahivatkozás
+                    (backreferences)<br>
+                    - A csoportok által kinyert tartalmat programból kezelhetjük<br>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <strong>(...)</strong> Egy zárójelbe tett kifejezés csoportot alkot.<br>
+                            <mark @click="regexClick('\\' + 'd+(\.' + '\\' + 'd+)?')">\d+(\.\d+)?</mark> egész és
+                            tizedes számok<br>
+                            <mark
+                                @click="regexClick('\\' + 'w+@'+'\\' +'w+('+'\\' + '.'+'\\'+'w+)+')">\w+@\w+(\.\w+)+</mark>
+                            Egyszerű (nem ajánlott) email ellenőrző<br>
+                            <mark
+                                @click="regexClick('_(' + '\\' + 'w+)_[' + '\\' + 'w' + '\\' + 's]*_/' + '\\' + '1_')">_(\w+)_[\w\s]*_/\1_</mark>
+                            html szerű blokkok keresése<br>
+                        </li>
+                    </ul>
+
+                    <h3 id="peldak">Példák</h3>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <strong>Példa 1.</strong> Exponenciális számok keresése.<br>
+                            <mark
+                                @click="regexClick('((' + '\\' + 'd+)?' + '\\' + '.)?' + '\\' + 'd+e[+-]?' + '\\' + 'd+')">((\d+)?\.)?\d+e[+-]?\d+</mark><br>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Példa 2.</strong> Fájl elérési útból a fájlnevet kiszedő, ha az a végén van.<br>
+                            <mark @click="regexClick('[^/]+$')">[^/]+$</mark><br>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Példa 3.</strong> Dátumok.<br>
+                            <mark
+                                @click="regexClick('('+'\\'+'d{4})'+'\\'+'D('+'\\'+'d{2})'+'\\'+'D('+'\\'+'d{2})')">(\d{4})\D(\d{2})\D(\d{2})</mark><br>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
+    </script>
+    <!-- vue -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="my.js"></script>
+</body>
+
+</html>
